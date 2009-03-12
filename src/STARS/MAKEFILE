@@ -1,0 +1,8 @@
+all:	stars.exe
+
+stars.exe:	stars.obj ptc.lib
+	lcclnk -s -subsystem console -o stars.exe stars.obj ptc.lib
+
+stars.obj:	stars.c sincos.c back.c vid.c
+	lcc -o stars.c -Ic:\_ptc\source
+

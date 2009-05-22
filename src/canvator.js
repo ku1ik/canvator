@@ -1,5 +1,6 @@
 var Canvator = {
   fps: 20,
+  running: false,
   ctx: null,
   width: null,
   height: null,
@@ -13,6 +14,12 @@ var Canvator = {
 
   init: function() {
     var canvasElement = document.getElementById('example');
+    canvasElement.onclick = function() {
+      if (!this.running) {
+        this.running = true;
+        setInterval(function() { Canvator.draw.apply(Canvator) }, 1000 / Canvator.fps);
+      }
+    };
     this.ctx = canvasElement.getContext('2d');
     this.width = canvasElement.getAttribute("width") * 1;
     this.height = canvasElement.getAttribute("height") * 1;
@@ -21,9 +28,7 @@ var Canvator = {
     this.loadGraphics();
     this.ctx.font = '30px Georgia';
     this.ctx.globalAlpha = 0.5;
-    setTimeout(function() {
-      setInterval(function() { Canvator.draw.apply(Canvator) }, 1000 / Canvator.fps);
-    }, 200);
+    this.draw();
   },
 
   loadGraphics: function() {
@@ -37,24 +42,6 @@ var Canvator = {
 //    this.clear();
     this.drawBg();
     //ctx.globalCompositeOperation = 'lighter';
-
-//    var j = this.i % 2;
-//
-//    this.ctx.fillStyle = "rgb(0,255,0)";
-//    this.ctx.fillRect(25, 25, 100, 100);
-//
-//    this.ctx.fillStyle = "rgba(255,0,0, 0.6)";
-//    this.ctx.beginPath();
-//    this.ctx.arc(j*30+125,(1-j)*30+100,50,0,Math.PI*2,true);
-//    this.ctx.fill();
-//
-//    this.ctx.fillStyle = "rgba(0,0,255,0.6)";
-//    this.ctx.beginPath();
-//    this.ctx.moveTo(125,100);
-//    this.ctx.lineTo(175,50);
-//    this.ctx.lineTo(225,150);
-//    this.ctx.fill();
-
     this.drawSuperman();
     this.drawBatman();
     this.drawOverlay();
@@ -63,10 +50,10 @@ var Canvator = {
     this.i++;
   },
 
-  clear: function() {
+//  clear: function() {
 //    this.ctx.clearRect(0, 0, this.width, this.height);
     //    ctx.globalCompositeOperation = 'source-over';
-  },
+//  },
 
   drawBg: function() {
     this.ctx.save();
@@ -88,7 +75,7 @@ var Canvator = {
   },
 
   drawBatman: function() {
-      var alpha = this.ctx.globalAlpha;// = 0.8;
+    var alpha = this.ctx.globalAlpha;// = 0.8;
     this.ctx.globalAlpha = 1.0;
     this.ctx.save();
     this.ctx.translate(this.HCENTER, this.VCENTER);
@@ -110,13 +97,16 @@ var Canvator = {
   drawDashboard: function() {
     this.ctx.save();
     this.ctx.translate(57, 280);
-    var angle = this.i / 3 * Math.PI/180;
+//    var angle = this.i / 3 * Math.PI/180;
 //    this.ctx.rotate(angle);
-    var delta = 0.51 + Math.cos((-180 + this.i * 4) * Math.PI/180) * 0.5; //(this.i % 100) / 100.0;
+    var delta = 0.51 + Math.cos((-180 + this.i * 2) * Math.PI/180) * 0.5; //(this.i % 100) / 100.0;
     this.ctx.scale(1.0, 0.01 + delta);
-    this.ctx.fillStyle = "rgba(255,255,255, " + delta + ")";
-    this.ctx.fillText('Battle of Superheroes!', 0, 0);
+    this.ctx.fillStyle = "rgba(0, 0, 0, " + delta + ")";
+    if (this.ctx.fillText) {
+        this.ctx.fillText('Battle of Superheroes!', 10, 10);
+    } else {
+        this.ctx.mozDrawText('Battle of Superheroes!', 10, 10);
+    }
     this.ctx.restore();
   }
 }
-
